@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Tờ khai y tế</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .form-container {
+            max-width: 900px;
+            margin: 30px auto;
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.05);
+        }
+        .form-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .form-header h2 {
+            font-weight: bold;
+            color: #333;
+        }
+        .required-star {
+            color: red;
+            font-weight: bold;
+        }
+        .warning-text {
+            color: red;
+            font-weight: bold;
+            font-size: 0.9rem;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .section-label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            margin-top: 15px;
+            font-size: 1rem;
+        }
+        .btn-submit {
+            background-color: #4CAF50;
+            color: white;
+            font-weight: bold;
+            padding: 10px 40px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.1rem;
+        }
+        .btn-submit:hover {
+            background-color: #45a049;
+            color: white;
+        }
+        .table-symptoms th, .table-symptoms td {
+            vertical-align: middle;
+        }
+        .table-symptoms {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="form-container">
+
+        <div class="form-header">
+            <h2>TỜ KHAI Y TẾ</h2>
+            <p class="small text-muted fw-bold">ĐÂY LÀ TÀI LIỆU QUAN TRỌNG, THÔNG TIN CỦA ANH/CHỊ SẼ GIÚP CƠ QUAN Y TẾ LIÊN LẠC KHI CẦN THIẾT ĐỂ PHÒNG CHỐNG DỊCH BỆNH TRUYỀN NHIỄM</p>
+        </div>
+
+        <div class="warning-text">
+            Khuyến cáo: Khai báo thông tin sai là vi phạm pháp luật Việt Nam và có thể xử lý hình sự
+        </div>
+
+        <form th:action="@{/create-form}" th:object="${healthDeclarationDto}" method="post">
+
+            <div class="mb-3">
+                <label class="section-label">Họ tên (ghi chữ IN HOA) <span class="required-star">(*)</span></label>
+                <input type="text" class="form-control text-uppercase" th:field="*{name}" placeholder="NGUYỄN VĂN A" required>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <label class="section-label">Năm sinh <span class="required-star">(*)</span></label>
+                    <select class="form-select" th:field="*{yearOfBirth}">
+                        <option value="">Chọn năm</option>
+                        <option th:each="year : ${#numbers.sequence(1940, 2026)}"
+                                th:value="${year}" th:text="${year}"></option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="section-label">Giới tính <span class="required-star">(*)</span></label>
+                    <select class="form-select" th:field="*{gender}">
+                        <option value="">-Chọn-</option>
+                        <option value="Nam">Nam</option>
+                        <option value="Nữ">Nữ</option>
+                        <option value="Khác">Khác</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="section-label">Quốc tịch <span class="required-star">(*)</span></label>
+                    <select class="form-select" th:field="*{nationality}">
+                        <option value="Việt Nam" selected>Việt Nam</option>
+                        <option value="Hoa Kỳ">Hoa Kỳ (USA)</option>
+                        <option value="Anh">Anh (UK)</option>
+                        <option value="Trung Quốc">Trung Quốc</option>
+                        <option value="Hàn Quốc">Hàn Quốc</option>
+                        <option value="Nhật Bản">Nhật Bản</option>
+                        <option value="Pháp">Pháp</option>
+                        <option value="Đức">Đức</option>
+                        <option value="Nga">Nga</option>
+                        <option value="Lào">Lào</option>
+                        <option value="Campuchia">Campuchia</option>
+                        <option value="Thái Lan">Thái Lan</option>
+                        <option value="Singapore">Singapore</option>
+                        <option value="Khác">Khác</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="section-label">Số hộ chiếu hoặc số CMND hoặc giấy thông hành hợp pháp khác <span class="required-star">(*)</span></label>
+                <input type="text" class="form-control" th:field="*{citizenId}" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="section-label">Thông tin đi lại <span class="required-star">(*)</span></label>
+                <div class="d-flex gap-4 mt-1">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" th:field="*{travelType}" value="Tàu bay" id="travelPlane">
+                        <label class="form-check-label" for="travelPlane">Tàu bay</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" th:field="*{travelType}" value="Tàu thuyền" id="travelShip">
+                        <label class="form-check-label" for="travelShip">Tàu thuyền</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" th:field="*{travelType}" value="Ô tô" id="travelCar">
+                        <label class="form-check-label" for="travelCar">Ô tô</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" th:field="*{travelType}" value="Khác" id="travelOther">
+                        <label class="form-check-label" for="travelOther">Khác (Ghi rõ)</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label class="section-label">Số hiệu phương tiện</label>
+                    <input type="text" class="form-control" th:field="*{vehicleNumber}" placeholder="VD: VN123">
+                </div>
+                <div class="col-md-6">
+                    <label class="section-label">Số ghế</label>
+                    <input type="text" class="form-control" th:field="*{seatNumber}">
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label class="section-label">Ngày khởi hành <span class="required-star">(*)</span></label>
+                    <input type="date" class="form-control" th:field="*{departureDate}" required>
+                </div>
+                <div class="col-md-6">
+                    <label class="section-label">Ngày kết thúc <span class="required-star">(*)</span></label>
+                    <input type="date" class="form-control" th:field="*{arrivalDate}" required>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="section-label">Trong vòng 14 ngày qua, Anh/Chị có đến tỉnh/thành phố nào? <span class="required-star">(*)</span></label>
+                <textarea class="form-control" th:field="*{visitedLocations}" rows="2"></textarea>
+            </div>
+
+            <div class="mt-4 mb-2 fw-bold text-uppercase border-bottom pb-2">Địa chỉ liên lạc</div>
+
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <label class="section-label">Tỉnh / thành <span class="required-star">(*)</span></label>
+                    <select class="form-select" th:field="*{city}">
+                        <option value="">-Chọn-</option>
+                        <option value="Hà Nội">Hà Nội</option>
+                        <option value="TP.HCM">TP.Hồ Chí Minh</option>
+                        <option value="Đà Nẵng">Đà Nẵng</option>
+                        <option value="Hải Phòng">Hải Phòng</option>
+                        <option value="Cần Thơ">Cần Thơ</option>
+                        <option value="Bắc Ninh">Bắc Ninh</option>
+                        <option value="Quảng Ninh">Quảng Ninh</option>
+                        <option value="Nghệ An">Nghệ An</option>
+                        <option value="Thanh Hóa">Thanh Hóa</option>
+                        <option value="Khánh Hòa">Khánh Hòa</option>
+                        <option value="Đồng Nai">Đồng Nai</option>
+                        <option value="Bình Dương">Bình Dương</option>
+                        <option value="Bà Rịa - Vũng Tàu">Bà Rịa - Vũng Tàu</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="section-label">Quận / huyện <span class="required-star">(*)</span></label>
+                    <select class="form-select" th:field="*{district}">
+                        <option value="">-Chọn-</option>
+
+                        <optgroup label="Hà Nội">
+                            <option value="Quận Ba Đình">Quận Ba Đình</option>
+                            <option value="Quận Hoàn Kiếm">Quận Hoàn Kiếm</option>
+                            <option value="Quận Đống Đa">Quận Đống Đa</option>
+                            <option value="Quận Cầu Giấy">Quận Cầu Giấy</option>
+                            <option value="Quận Thanh Xuân">Quận Thanh Xuân</option>
+                            <option value="Huyện Đông Anh">Huyện Đông Anh</option>
+                        </optgroup>
+
+                        <optgroup label="TP.HCM">
+                            <option value="Quận 1">Quận 1</option>
+                            <option value="Quận 3">Quận 3</option>
+                            <option value="Quận 5">Quận 5</option>
+                            <option value="Quận 7">Quận 7</option>
+                            <option value="Quận Bình Thạnh">Quận Bình Thạnh</option>
+                            <option value="Thành phố Thủ Đức">TP. Thủ Đức</option>
+                        </optgroup>
+
+                        <optgroup label="Đà Nẵng">
+                            <option value="Quận Hải Châu">Quận Hải Châu</option>
+                            <option value="Quận Sơn Trà">Quận Sơn Trà</option>
+                            <option value="Quận Ngũ Hành Sơn">Quận Ngũ Hành Sơn</option>
+                        </optgroup>
+
+                        <optgroup label="Khác">
+                            <option value="Thành phố Biên Hòa">TP. Biên Hòa</option>
+                            <option value="Thành phố Vũng Tàu">TP. Vũng Tàu</option>
+                            <option value="Thành phố Nha Trang">TP. Nha Trang</option>
+                            <option value="Thành phố Hạ Long">TP. Hạ Long</option>
+                            <option value="Khác">Khác</option>
+                        </optgroup>
+                    </select>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="section-label">Phường / xã <span class="required-star">(*)</span></label>
+                    <select class="form-select" th:field="*{ward}">
+                        <option value="">-Chọn-</option>
+                        <option value="Phường 1">Phường 1</option>
+                        <option value="Phường 2">Phường 2</option>
+                        <option value="Phường 3">Phường 3</option>
+                        <option value="Phường 4">Phường 4</option>
+                        <option value="Phường 5">Phường 5</option>
+                        <option value="Phường Bến Nghé">Phường Bến Nghé</option>
+                        <option value="Phường Bến Thành">Phường Bến Thành</option>
+                        <option value="Phường Láng Hạ">Phường Láng Hạ</option>
+                        <option value="Phường Dịch Vọng">Phường Dịch Vọng</option>
+                        <option value="Xã Kim Chung">Xã Kim Chung</option>
+                        <option value="Khác">Khác</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="section-label">Địa chỉ nơi ở <span class="required-star">(*)</span></label>
+                <input type="text" class="form-control" th:field="*{detailAddress}" required>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label class="section-label">Điện thoại <span class="required-star">(*)</span></label>
+                    <input type="text" class="form-control" th:field="*{phoneNumber}" required>
+                </div>
+                <div class="col-md-6">
+                    <label class="section-label">Email</label>
+                    <input type="email" class="form-control" th:field="*{email}">
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="section-label">Trong vòng 14 ngày qua, Anh/Chị có thấy xuất hiện dấu hiệu nào sau đây không? <span class="required-star">(*)</span></label>
+
+                <table class="table table-bordered table-striped table-symptoms">
+                    <thead class="table-light">
+                    <tr>
+                        <th>Triệu chứng</th>
+                        <th class="text-center" width="10%">Có</th>
+                        <th>Triệu chứng</th>
+                        <th class="text-center" width="10%">Có</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>Sốt <span class="required-star">(*)</span></td>
+                        <td class="text-center"><input class="form-check-input" type="checkbox" th:field="*{symptoms}" value="Sốt"></td>
+
+                        <td>Nôn/buồn nôn <span class="required-star">(*)</span></td>
+                        <td class="text-center"><input class="form-check-input" type="checkbox" th:field="*{symptoms}" value="Nôn"></td>
+                    </tr>
+                    <tr>
+                        <td>Ho <span class="required-star">(*)</span></td>
+                        <td class="text-center"><input class="form-check-input" type="checkbox" th:field="*{symptoms}" value="Ho"></td>
+
+                        <td>Tiêu chảy <span class="required-star">(*)</span></td>
+                        <td class="text-center"><input class="form-check-input" type="checkbox" th:field="*{symptoms}" value="Tiêu chảy"></td>
+                    </tr>
+                    <tr>
+                        <td>Khó thở <span class="required-star">(*)</span></td>
+                        <td class="text-center"><input class="form-check-input" type="checkbox" th:field="*{symptoms}" value="Khó thở"></td>
+
+                        <td>Xuất huyết ngoài da <span class="required-star">(*)</span></td>
+                        <td class="text-center"><input class="form-check-input" type="checkbox" th:field="*{symptoms}" value="Xuất huyết"></td>
+                    </tr>
+                    <tr>
+                        <td>Đau họng <span class="required-star">(*)</span></td>
+                        <td class="text-center"><input class="form-check-input" type="checkbox" th:field="*{symptoms}" value="Đau họng"></td>
+
+                        <td>Nổi ban ngoài da <span class="required-star">(*)</span></td>
+                        <td class="text-center"><input class="form-check-input" type="checkbox" th:field="*{symptoms}" value="Nổi ban"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="mb-4">
+                <label class="section-label">Lịch sử phơi nhiễm: Trong vòng 14 ngày qua, Anh/Chị có <span class="required-star">(*)</span></label>
+                <div class="card p-3 bg-light">
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="checkbox" th:field="*{exposureHistory}" value="Đến trang trại/chợ buôn bán động vật">
+                        <label class="form-check-label">Đến trang trại chăn nuôi / chợ buôn bán động vật sống / cơ sở giết mổ động vật / tiếp xúc động vật <span class="required-star">(*)</span></label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" th:field="*{exposureHistory}" value="Tiếp xúc người bệnh hô hấp">
+                        <label class="form-check-label">Tiếp xúc gần (< 2m) với người mắc bệnh viêm đường hô hấp do nCoV <span class="required-star">(*)</span></label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-danger small mb-4 text-center">
+                Dữ liệu bạn cung cấp hoàn toàn bảo mật và chỉ phục vụ cho việc phòng chống dịch, thuộc quản lý của Ban chỉ đạo quốc gia về Phòng chống dịch Covid-19. Khi bạn nhấn nút "Gửi" là bạn đã hiểu và đồng ý.
+            </div>
+
+            <div class="text-center">
+                <button type="submit" class="btn btn-submit">GỬI TỜ KHAI</button>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+</body>
+</html>
